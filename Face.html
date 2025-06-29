@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceTrack - Gestion de Pointage par Reconnaissance Faciale</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        
+        .how-it-works-step {
+            position: relative;
+            padding-left: 70px;
+        }
+        
+        .how-it-works-step::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: var(--primary);
+        }
+        
+        .how-it-works-step:last-child::before {
+            display: none;
+        }
+        
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .testimonial-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .pricing-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .pricing-card {
+            transition: all 0.3s ease;
+        }
+        
+        .recommended {
+            border: 3px solid var(--accent);
+            position: relative;
+        }
+        
+        .recommended-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background-color: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .form-input {
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-bold text-blue-600">Face<span class="text-purple-800">Track</span></span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-4">
+                        <a href="#accueil" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Accueil</a>
+                        <a href="#fonctionnalites" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Fonctionnalités</a>
+                        <a href="#fonctionnement" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Comment ça marche</a>
+                        <a href="#avantages" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Avantages</a>
+                        <a href="#tarifs" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Tarifs</a>
+                        <a href="#contact" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Contact</a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <a href="#inscription" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition duration-300">Essai gratuit</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#accueil" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Accueil</a>
+                <a href="#fonctionnalites" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Fonctionnalités</a>
+                <a href="#fonctionnement" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Comment ça marche</a>
+                <a href="#avantages" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Avantages</a>
+                <a href="#tarifs" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Tarifs</a>
+                <a href="#contact" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600">Contact</a>
+                <a href="#inscription" class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-md font-medium mt-2">Essai gratuit</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="accueil" class="hero pt-24 pb-16 md:py-32 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex items-center justify-between">
+                <div class="md:w-1/2 mb-10 md:mb-0 fade-in">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Gestion de Pointage <span class="text-pink-500">Intelligente</span></h1>
+                    <p class="text-xl mb-8">La solution tout-en-un pour une gestion des présences précise, sécurisée et sans contact grâce à la reconnaissance faciale de pointe.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#inscription" class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-md font-medium transition duration-300 text-center">Essai gratuit</a>
+                        <a href="#fonctionnement" class="border-2 border-white hover:bg-white hover:text-blue-600 px-6 py-3 rounded-md font-medium transition duration-300 text-center">Découvrir</a>
+                    </div>
+                    <div class="mt-8 flex items-center space-x-4">
+                        <div class="flex -space-x-2">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-10 h-10 rounded-full border-2 border-white">
+                            <img src="https://randomuser.me/api/portraits/men/75.jpg" class="w-10 h-10 rounded-full border-2 border-white">
+                            <img src="https://randomuser.me/api/portraits/women/63.jpg" class="w-10 h-10 rounded-full border-2 border-white">
+                        </div>
+                        <div>
+                            <div class="flex items-center">
+                                <div class="flex">
+                                    <i class="fas fa-star text-yellow-300"></i>
+                                    <i class="fas fa-star text-yellow-300"></i>
+                                    <i class="fas fa-star text-yellow-300"></i>
+                                    <i class="fas fa-star text-yellow-300"></i>
+                                    <i class="fas fa-star text-yellow-300"></i>
+                                </div>
+                                <span class="ml-2">5/5 sur 500+ avis</span>
+                            </div>
+                            <p class="text-sm">Plus de 1000 entreprises nous font confiance</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 fade-in">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Interface de reconnaissance faciale" class="rounded-lg shadow-2xl border-4 border-white">
+                        <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg hidden md:block">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 p-3 rounded-full mr-3">
+                                    <i class="fas fa-user-check text-blue-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-800">+97%</p>
+                                    <p class="text-gray-600 text-sm">Précision</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clients Section -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-gray-500 mb-8">Ils nous font confiance</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+                <img src="https://logo.clearbit.com/airbnb.com?size=120" alt="Airbnb" class="h-12 grayscale hover:grayscale-0 transition duration-300 mx-auto">
+                <img src="https://logo.clearbit.com/netflix.com?size=120" alt="Netflix" class="h-12 grayscale hover:grayscale-0 transition duration-300 mx-auto">
+                <img src="https://logo.clearbit.com/google.com?size=120" alt="Google" class="h-12 grayscale hover:grayscale-0 transition duration-300 mx-auto">
+                <img src="https://logo.clearbit.com/microsoft.com?size=120" alt="Microsoft" class="h-12 grayscale hover:grayscale-0 transition duration-300 mx-auto">
+                <img src="https://logo.clearbit.com/spotify.com?size=120" alt="Spotify" class="h-12 grayscale hover:grayscale-0 transition duration-300 mx-auto">
+                <img src="https://logo.clearbit.com/slack.com?size=120" alt="Slack" class="h-12 grayscale hover:grayscale-0 transition duration-300 mx-auto">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="fonctionnalites" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Fonctionnalités <span class="text-blue-600">Avancées</span></h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Découvrez les fonctionnalités puissantes qui transforment votre gestion des présences en une expérience fluide et sécurisée.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card bg-white rounded-lg p-8 shadow-md hover:shadow-xl border border-gray-100">
+                    <div class="text-blue-600 mb-4">
+                        <i class="fas fa-user-shield text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Reconnaissance Faciale Sécurisée</h3>
+                    <p class="text-gray-600">Notre technologie de pointe identifie vos employés avec une précision de 99.7% et détecte les tentatives de fraude.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card bg-white rounded-lg p-8 shadow-md hover:shadow-xl border border-gray-100">
+                    <div class="text-purple-600 mb-4">
+                        <i class="fas fa-clock text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Suivi du Temps en Temps Réel</h3>
+                    <p class="text-gray-600">Visualisez les heures de travail, les retards et les heures supplémentaires en temps réel via notre tableau de bord intuitif.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card bg-white rounded-lg p-8 shadow-md hover:shadow-xl border border-gray-100">
+                    <div class="text-green-600 mb-4">
+                        <i class="fas fa-mobile-alt text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Application Mobile</h3>
+                    <p class="text-gray-600">Gérez les pointages depuis n'importe où avec notre application iOS et Android. Pointage sans contact même hors site.</p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="feature-card bg-white rounded-lg p-8 shadow-md hover:shadow-xl border border-gray-100">
+                    <div class="text-red-500 mb-4">
+                        <i class="fas fa-chart-line text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Rapports Détaillés</h3>
+                    <p class="text-gray-600">Générez automatiquement des rapports mensuels, hebdomadaires ou journaliers pour une analyse approfondie.</p>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="feature-card bg-white rounded-lg p-8 shadow-md hover:shadow-xl border border-gray-100">
+                    <div class="text-yellow-500 mb-4">
+                        <i class="fas fa-plug text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Intégrations</h3>
+                    <p class="text-gray-600">Connectez-vous avec vos outils RH existants comme SAP, Oracle ou vos solutions de paie locales.</p>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="feature-card bg-white rounded-lg p-8 shadow-md hover:shadow-xl border border-gray-100">
+                    <div class="text-indigo-600 mb-4">
+                        <i class="fas fa-cloud text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Stockage Sécurisé</h3>
+                    <p class="text-gray-600">Toutes les données sont cryptées et stockées en conformité avec le RGPD. Vous gardez le contrôle total.
+                                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="fonctionnement" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Comment <span class="text-blue-600">Ça Marche</span></h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Trois étapes simples pour une gestion des présences sans effort.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="how-it-works-step">
+                    <div class="step-number">1</div>
+                    <h3 class="text-xl font-bold mb-3">Enregistrement</h3>
+                    <p class="text-gray-600">Les employés enregistrent leur visage via l'application ou le terminal biométrique en moins de 30 secondes.</p>
+                </div>
+                <div class="how-it-works-step">
+                    <div class="step-number">2</div>
+                    <h3 class="text-xl font-bold mb-3">Pointage Rapide</h3>
+                    <p class="text-gray-600">Un scan facial en 2 secondes suffit pour pointer à l'entrée ou à la sortie, même dans des conditions d'éclairage variables.</p>
+                </div>
+                <div class="how-it-works-step">
+                    <div class="step-number">3</div>
+                    <h3 class="text-xl font-bold mb-3">Suivi en Temps Réel</h3>
+                    <p class="text-gray-600">Accédez aux données immédiatement via le tableau de bord administrateur ou l'application mobile.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="avantages" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Ce Que Disent Nos <span class="text-purple-800">Clients</span></h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="testimonial-card bg-white p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg"  class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Sophie Martin</h4>
+                            <p class="text-sm text-gray-500">Responsable RH chez TechCorp</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"Depuis que nous utilisons FaceTrack, les erreurs de pointage ont disparu. La précision est impressionnante !"</p>
+                    <div class="flex">
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                    </div>
+                </div>
+                <div class="testimonial-card bg-white p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/men/35.jpg"  class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Jean Dubois</h4>
+                            <p class="text-sm text-gray-500">Gérant de Supermarché</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"Le gain de temps est colossal. Nos équipes matinales pointent en quelques secondes sans file d'attente."</p>
+                    <div class="flex">
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star-half-alt text-yellow-300"></i>
+                    </div>
+                </div>
+                <div class="testimonial-card bg-white p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg"  class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Amina Diop</h4>
+                            <p class="text-sm text-gray-500">Directrice de Fabrique</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"La détection des tentatives de fraude nous a évité plusieurs heures de travail non facturées."</p>
+                    <div class="flex">
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                        <i class="fas fa-star text-yellow-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="tarifs" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Nos <span class="text-blue-600">Formules</span></h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Choisissez le plan qui correspond à vos besoins.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Basic Plan -->
+                <div class="pricing-card bg-white rounded-lg p-8 shadow-md border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4">Starter</h3>
+                    <p class="text-4xl font-bold mb-6">€29<span class="text-lg font-normal text-gray-500">/mois</span></p>
+                    <ul class="mb-8 space-y-4">
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Jusqu'à 50 utilisateurs</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Stockage cloud de 100GB</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Support par email</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-times mr-2"></i> Intégrations avancées</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-times mr-2"></i> API personnalisée</li>
+                    </ul>
+                    <a href="#inscription" class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition duration-300 hover:bg-blue-700">Commencer</a>
+                </div>
+                <!-- Pro Plan (Recommended) -->
+                <div class="pricing-card recommended bg-white rounded-lg p-8 shadow-lg border-2 border-blue-600 relative">
+                    <div class="recommended-badge">MEILLEURE VALEUR</div>
+                    <h3 class="text-xl font-bold mb-4">Pro</h3>
+                    <p class="text-4xl font-bold mb-6">€89<span class="text-lg font-normal text-gray-500">/mois</span></p>
+                    <ul class="mb-8 space-y-4">
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Jusqu'à 250 utilisateurs</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Stockage cloud de 500GB</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Support prioritaire</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Intégrations avancées</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-times mr-2"></i> API personnalisée</li>
+                    </ul>
+                    <a href="#inscription" class="block w-full text-center bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition duration-300 hover:bg-blue-700">Commencer</a>
+                </div>
+                <!-- Enterprise Plan -->
+                <div class="pricing-card bg-white rounded-lg p-8 shadow-md border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4">Entreprise</h3>
+                    <p class="text-4xl font-bold mb-6">Sur mesure</p>
+                    <ul class="mb-8 space-y-4">
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Utilisateurs illimités</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Stockage cloud illimité</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Support 24/7</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> API personnalisée</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Formation sur site</li>
+                    </ul>
+                    <a href="#contact" class="block w-full text-center bg-purple-800 text-white px-4 py-2 rounded-md font-medium transition duration-300 hover:bg-purple-900">Contactez-nous</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Contactez Notre <span class="text-purple-800">Équipe</span></h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Une question ? Nous sommes là pour vous aider.</p>
+            </div>
+            <div class="max-w-3xl mx-auto">
+                <form class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                            <input type="text" id="name" name="name" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="email" name="email" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Sujet</label>
+                        <input type="text" id="subject" name="subject" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <textarea id="message" name="message" rows="5" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 px-6 rounded-md font-medium transition duration-300">
+                            Envoyer le message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+            <div class="md:flex md:justify-between">
+                <div class="mb-8 md:mb-0">
+                    <h3 class="text-2xl font-bold mb-4">Face<span class="text-purple-800">Track</span></h3>
+                    <p class="text-gray-400 max-w-xs mb-4">La solution de pointage la plus précise et sécurisée grâce à la reconnaissance faciale.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Liens Rapides</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#accueil" class="text-gray-400 hover:text-white">Accueil</a></li>
+                            <li><a href="#fonctionnalites" class="text-gray-400 hover:text-white">Fonctionnalités</a></li>
+                            <li><a href="#fonctionnement" class="text-gray-400 hover:text-white">Comment ça marche</a></li>
+                            <li><a href="#tarifs" class="text-gray-400 hover:text-white">Tarifs</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Ressources</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white">Documentation</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Centre d'aide</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">API</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Entreprise</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white">À propos</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Carrières</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Partenaires</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Presse</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Légal</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white">Politique de confidentialité</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Conditions d'utilisation</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">RGPD</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Cookies</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-gray-800">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">© 2024 FaceTrack. Tous droits réservés.</p>
+                <div class="mt-4 md:mt-0">
+                    <p class="text-gray-400 text-sm">Conçu avec ❤️ par votre équipe FaceTrack</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Fade-in animation on scroll
+        const faders = document.querySelectorAll('.fade-in');
+        const appearOptions = {
+            threshold: 0,
+            rootMargin: "0px 0px -100px 0px"
+        };
+        const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.style.opacity = '1';
+                observer.unobserve(entry.target);
+            });
+        }, appearOptions);
+        faders.forEach(fader => {
+            fader.style.opacity = '0';
+            appearOnScroll.observe(fader);
+        });
+    </script>
+</body>
+</html>
